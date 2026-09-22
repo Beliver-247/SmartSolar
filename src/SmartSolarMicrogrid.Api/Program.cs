@@ -143,16 +143,18 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-// Seed backoffice user on startup
-await SeedBackofficeUserAsync(app.Services);
+// Seed users on startup
+await SeedUsersAsync(app.Services);
 
 app.Run();
 
-async Task SeedBackofficeUserAsync(IServiceProvider services)
+async Task SeedUsersAsync(IServiceProvider services)
 {
     var userRepository = services.GetRequiredService<IUserRepository>();
-    var existingUser = await userRepository.GetByUsernameAsync("admin");
-    if (existingUser == null)
+    
+    // Seed Backoffice User
+    var existingAdmin = await userRepository.GetByUsernameAsync("admin");
+    if (existingAdmin == null)
     {
         var adminUser = new User
         {
@@ -164,5 +166,21 @@ async Task SeedBackofficeUserAsync(IServiceProvider services)
             CreatedAt = DateTimeOffset.UtcNow
         };
         await userRepository.CreateAsync(adminUser);
+    }
+
+    // Seed Grid Operator User
+    var existingOperator = await userRepository.GetByUsernameAsync("operator");
+    if (existingOperator == null)
+    {
+        var operatorUser = new User
+        {
+            Username = "operator",
+            PasswordHash = BCrypt.Net.BCrypt.HashPassword("operator123"),
+            Role = Role.GridOperator,
+            FullName = "Grid Operator",
+            IsActive = true,
+            CreatedAt = DateTimeOffset.UtcNow
+        };
+        await userRepository.CreateAsync(operatorUser);
     }
 }
