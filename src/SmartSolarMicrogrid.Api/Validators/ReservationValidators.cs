@@ -12,7 +12,7 @@ namespace SmartSolarMicrogrid.Api.Validators
     {
         public CreateReservationRequestValidator()
         {
-            RuleFor(x => x.Nic).NotEmpty().WithMessage("NIC is required.");
+            RuleFor(x => x.Nic).NotEmpty().Matches(@"^(\d{12}|\d{9}[vV])$").WithMessage("NIC must be either 12 numbers or 9 numbers followed by 'v' or 'V'.");
             RuleFor(x => x.SlotId).NotEmpty().WithMessage("Slot ID is required.");
         }
     }

@@ -13,7 +13,7 @@ namespace SmartSolarMicrogrid.Api.Validators
         public UpdateProsumerRequestValidator()
         {
             RuleFor(x => x.FullName).NotEmpty().WithMessage("Full Name is required.");
-            RuleFor(x => x.Phone).NotEmpty().WithMessage("Phone is required.");
+            RuleFor(x => x.Phone).NotEmpty().Matches(@"^\d{10}$").WithMessage("Mobile number must be exactly 10 numbers.");
             RuleFor(x => x.Address).NotEmpty().WithMessage("Address is required.");
         }
     }
