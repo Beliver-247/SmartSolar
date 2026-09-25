@@ -29,16 +29,16 @@ namespace SmartSolarMicrogrid.Api.Services
     public class ReservationService : IReservationService
     {
         private readonly IEnergyReservationRepository _reservationRepository;
-        private readonly IEnergyBookingSlotRepository _slotRepository;
+        private readonly IStationRepository _stationRepository;
         private readonly IProsumerRepository _prosumerRepository;
 
         public ReservationService(
             IEnergyReservationRepository reservationRepository,
-            IEnergyBookingSlotRepository slotRepository,
+            IStationRepository stationRepository,
             IProsumerRepository prosumerRepository)
         {
             _reservationRepository = reservationRepository;
-            _slotRepository = slotRepository;
+            _stationRepository = stationRepository;
             _prosumerRepository = prosumerRepository;
         }
 
@@ -83,32 +83,43 @@ namespace SmartSolarMicrogrid.Api.Services
             if (!prosumer.IsActive)
                 throw new BusinessRuleException("Cannot create reservation for deactivated Prosumer.");
 
-            // Rule 3: Slot must exist
-            var slot = await _slotRepository.GetByIdAsync(request.SlotId);
-            if (slot == null)
-                throw new NotFoundException("Slot not found.");
+            // Rule 3: Station must exist
+            var station = await _stationRepository.GetByIdAsync(request.StationId);
+            if (station == null)
+                throw new NotFoundException("Station not found.");
 
-            // Rule 4: Slot must be Open
-            if (slot.Status != SlotStatus.Open)
-                throw new BusinessRuleException("Slot is not available.");
+            if (!station.IsActive)
+                throw new BusinessRuleException("Cannot book slots at a deactivated station.");
+
+            if (station.Schedule == null || !station.Schedule.Contains(request.TimeSlot))
+                throw new BusinessRuleException("Invalid time slot for this station.");
 
             // Rule 5: 7-day rule
+            if (!DateTime.TryParse(request.BookingDate, out var bookingDateParsed))
+                throw new ArgumentException("Invalid booking date.");
+
+            var startStr = request.TimeSlot.Split('-')[0];
+            var slotStartTime = DateTimeOffset.Parse($"{request.BookingDate}T{startStr}:00Z"); // Assuming UTC
+
             var now = DateTimeOffset.UtcNow;
-            if ((slot.SlotStart - now).TotalDays > 7)
+            if ((slotStartTime - now).TotalDays > 7)
                 throw new ArgumentException("Reservations cannot be made more than 7 days in advance.");
-            if (slot.SlotStart < now)
+            if (slotStartTime < now)
                 throw new ArgumentException("Cannot reserve a slot in the past.");
 
-            // Rule 8 & 9: Atomic update to prevent duplicate booking
-            bool updated = await _slotRepository.UpdateStatusAtomicAsync(slot.Id!, SlotStatus.Open, SlotStatus.Reserved);
-            if (!updated)
-                throw new BusinessRuleException("The selected booking slot is no longer available (race condition).");
+            // Dynamic Availability Check
+            var activeReservationsCount = await _reservationRepository.CountActiveReservationsAsync(request.StationId, request.BookingDate, request.TimeSlot);
+            if (activeReservationsCount >= station.BatterySlots)
+            {
+                throw new BusinessRuleException("The selected booking slot is full.");
+            }
 
             var reservation = new EnergyReservation
             {
                 Nic = request.Nic,
-                SlotId = request.SlotId,
-                StationId = slot.StationId,
+                StationId = request.StationId,
+                BookingDate = request.BookingDate,
+                TimeSlot = request.TimeSlot,
                 ReservedAt = now,
                 Status = ReservationStatus.Pending,
                 LastModified = now
@@ -125,41 +136,41 @@ namespace SmartSolarMicrogrid.Api.Services
             if (reservation == null)
                 throw new NotFoundException("Reservation not found.");
 
-            // Get current slot
-            var currentSlot = await _slotRepository.GetByIdAsync(reservation.SlotId);
-            if (currentSlot == null)
-                throw new NotFoundException("Current slot not found.");
-
+            var currentSlotStartTime = DateTimeOffset.Parse($"{reservation.BookingDate}T{reservation.TimeSlot.Split('-')[0]}:00Z");
             var now = DateTimeOffset.UtcNow;
+            
             // 12-hour rule for updating
-            if ((currentSlot.SlotStart - now).TotalHours < 12)
+            if ((currentSlotStartTime - now).TotalHours < 12)
                 throw new BusinessRuleException("Reservations can only be updated with at least 12 hours notice.");
 
-            // Get new slot
-            var newSlot = await _slotRepository.GetByIdAsync(request.SlotId);
-            if (newSlot == null)
-                throw new NotFoundException("New slot not found.");
+            // Get new station
+            var station = await _stationRepository.GetByIdAsync(request.StationId);
+            if (station == null)
+                throw new NotFoundException("Station not found.");
 
-            if (newSlot.Status != SlotStatus.Open)
-                throw new BusinessRuleException("New slot is not available.");
+            if (!station.IsActive)
+                throw new BusinessRuleException("Cannot book slots at a deactivated station.");
 
-            // Rule 5 applies to updates too? Yes, it's a new booking slot essentially.
-            if ((newSlot.SlotStart - now).TotalDays > 7)
+            if (station.Schedule == null || !station.Schedule.Contains(request.TimeSlot))
+                throw new BusinessRuleException("Invalid time slot for this station.");
+
+            var newSlotStartTime = DateTimeOffset.Parse($"{request.BookingDate}T{request.TimeSlot.Split('-')[0]}:00Z");
+            if ((newSlotStartTime - now).TotalDays > 7)
                 throw new ArgumentException("Reservations cannot be scheduled more than 7 days in advance.");
-            if (newSlot.SlotStart < now)
+            if (newSlotStartTime < now)
                 throw new ArgumentException("Cannot reserve a slot in the past.");
 
-            // Atomically reserve new slot
-            bool newSlotReserved = await _slotRepository.UpdateStatusAtomicAsync(newSlot.Id!, SlotStatus.Open, SlotStatus.Reserved);
-            if (!newSlotReserved)
-                throw new BusinessRuleException("The new booking slot is no longer available.");
-
-            // Free the old slot
-            await _slotRepository.UpdateStatusAtomicAsync(currentSlot.Id!, SlotStatus.Reserved, SlotStatus.Open);
+            // Dynamic Availability Check
+            var activeReservationsCount = await _reservationRepository.CountActiveReservationsAsync(request.StationId, request.BookingDate, request.TimeSlot);
+            if (activeReservationsCount >= station.BatterySlots)
+            {
+                throw new BusinessRuleException("The new booking slot is full.");
+            }
 
             // Update reservation
-            reservation.SlotId = newSlot.Id!;
-            reservation.StationId = newSlot.StationId;
+            reservation.StationId = request.StationId;
+            reservation.BookingDate = request.BookingDate;
+            reservation.TimeSlot = request.TimeSlot;
             reservation.LastModified = now;
 
             await _reservationRepository.UpdateAsync(reservation);
@@ -176,18 +187,12 @@ namespace SmartSolarMicrogrid.Api.Services
             if (reservation.Status == ReservationStatus.Cancelled)
                 throw new BusinessRuleException("Reservation is already cancelled.");
 
-            var slot = await _slotRepository.GetByIdAsync(reservation.SlotId);
             var now = DateTimeOffset.UtcNow;
+            var currentSlotStartTime = DateTimeOffset.Parse($"{reservation.BookingDate}T{reservation.TimeSlot.Split('-')[0]}:00Z");
 
             // 12-hour rule for cancellation
-            if (slot != null)
-            {
-                if ((slot.SlotStart - now).TotalHours < 12)
-                    throw new BusinessRuleException("Reservations can only be cancelled with at least 12 hours notice.");
-
-                // Free the slot
-                await _slotRepository.UpdateStatusAtomicAsync(slot.Id!, slot.Status, SlotStatus.Open);
-            }
+            if ((currentSlotStartTime - now).TotalHours < 12)
+                throw new BusinessRuleException("Reservations can only be cancelled with at least 12 hours notice.");
 
             reservation.Status = ReservationStatus.Cancelled;
             reservation.LastModified = now;
@@ -223,8 +228,9 @@ namespace SmartSolarMicrogrid.Api.Services
             {
                 Id = r.Id!,
                 Nic = r.Nic,
-                SlotId = r.SlotId,
                 StationId = r.StationId,
+                BookingDate = r.BookingDate,
+                TimeSlot = r.TimeSlot,
                 ReservedAt = r.ReservedAt,
                 Status = r.Status,
                 LastModified = r.LastModified

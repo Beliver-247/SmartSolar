@@ -59,6 +59,27 @@ namespace SmartSolarMicrogrid.Api.Repositories
             return await _reservationsCollection.Find(filter).AnyAsync();
         }
 
+        public async Task<long> CountActiveReservationsAsync(string stationId, string bookingDate, string timeSlot)
+        {
+            var filter = Builders<EnergyReservation>.Filter.And(
+                Builders<EnergyReservation>.Filter.Eq(x => x.StationId, stationId),
+                Builders<EnergyReservation>.Filter.Eq(x => x.BookingDate, bookingDate),
+                Builders<EnergyReservation>.Filter.Eq(x => x.TimeSlot, timeSlot),
+                Builders<EnergyReservation>.Filter.In(x => x.Status, new[] { ReservationStatus.Pending, ReservationStatus.Approved })
+            );
+            return await _reservationsCollection.CountDocumentsAsync(filter);
+        }
+
+        public async Task<IEnumerable<EnergyReservation>> GetActiveReservationsForDateAsync(string stationId, string bookingDate)
+        {
+            var filter = Builders<EnergyReservation>.Filter.And(
+                Builders<EnergyReservation>.Filter.Eq(x => x.StationId, stationId),
+                Builders<EnergyReservation>.Filter.Eq(x => x.BookingDate, bookingDate),
+                Builders<EnergyReservation>.Filter.In(x => x.Status, new[] { ReservationStatus.Pending, ReservationStatus.Approved })
+            );
+            return await _reservationsCollection.Find(filter).ToListAsync();
+        }
+
         public async Task CreateAsync(EnergyReservation reservation)
         {
             // Creates a new reservation

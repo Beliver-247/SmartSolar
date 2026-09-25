@@ -93,8 +93,9 @@ namespace SmartSolarMicrogrid.Api.Services
                 {
                     Id = reservation.Id!,
                     Nic = reservation.Nic,
-                    SlotId = reservation.SlotId,
                     StationId = reservation.StationId,
+                    BookingDate = reservation.BookingDate,
+                    TimeSlot = reservation.TimeSlot,
                     ReservedAt = reservation.ReservedAt,
                     Status = reservation.Status,
                     LastModified = reservation.LastModified
