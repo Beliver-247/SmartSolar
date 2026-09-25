@@ -19,8 +19,9 @@ const Sidebar = () => {
 
   return (
     <div className="w-64 bg-slate-800 text-white flex flex-col">
-      <div className="h-16 flex items-center justify-center border-b border-slate-700">
-        <span className="text-xl font-bold tracking-wider">SolarGrid Web</span>
+      <div className="h-16 flex items-center px-5 space-x-3 border-b border-slate-700">
+        <img src="/logo.png" alt="Logo" className="w-8 h-8 rounded object-contain" />
+        <span className="text-xl font-bold tracking-wider">SolarGrid</span>
       </div>
       <nav className="flex-1 px-4 py-6 space-y-2">
         {navItems.map((item) => {
