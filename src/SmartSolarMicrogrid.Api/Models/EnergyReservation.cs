@@ -18,10 +18,13 @@ namespace SmartSolarMicrogrid.Api.Models
         public string Nic { get; set; } = string.Empty;
 
         [BsonRepresentation(BsonType.ObjectId)]
-        public string SlotId { get; set; } = string.Empty;
+        public string? SlotId { get; set; } // Kept for backwards compatibility
 
         [BsonRepresentation(BsonType.ObjectId)]
         public string StationId { get; set; } = string.Empty;
+
+        public string BookingDate { get; set; } = string.Empty;
+        public string TimeSlot { get; set; } = string.Empty;
 
         public DateTimeOffset ReservedAt { get; set; }
         public string Status { get; set; } = ReservationStatus.Pending;

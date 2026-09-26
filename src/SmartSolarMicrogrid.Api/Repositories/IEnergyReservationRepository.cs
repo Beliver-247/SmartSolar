@@ -16,6 +16,8 @@ namespace SmartSolarMicrogrid.Api.Repositories
         Task<IEnumerable<EnergyReservation>> GetByNicAsync(string nic, int skip, int limit);
         Task<IEnumerable<EnergyReservation>> GetByStatusAsync(string status, int skip, int limit);
         Task<bool> HasActiveReservationsForStationAsync(string stationId);
+        Task<long> CountActiveReservationsAsync(string stationId, string bookingDate, string timeSlot);
+        Task<IEnumerable<EnergyReservation>> GetActiveReservationsForDateAsync(string stationId, string bookingDate);
         Task CreateAsync(EnergyReservation reservation);
         Task UpdateAsync(EnergyReservation reservation);
         Task DeleteAsync(string id);

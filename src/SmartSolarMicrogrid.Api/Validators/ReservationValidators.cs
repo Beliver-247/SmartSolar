@@ -13,7 +13,9 @@ namespace SmartSolarMicrogrid.Api.Validators
         public CreateReservationRequestValidator()
         {
             RuleFor(x => x.Nic).NotEmpty().Matches(@"^(\d{12}|\d{9}[vV])$").WithMessage("NIC must be either 12 numbers or 9 numbers followed by 'v' or 'V'.");
-            RuleFor(x => x.SlotId).NotEmpty().WithMessage("Slot ID is required.");
+            RuleFor(x => x.StationId).NotEmpty().WithMessage("Station ID is required.");
+            RuleFor(x => x.BookingDate).NotEmpty().WithMessage("Booking Date is required.");
+            RuleFor(x => x.TimeSlot).NotEmpty().WithMessage("Time Slot is required.");
         }
     }
 
@@ -21,7 +23,9 @@ namespace SmartSolarMicrogrid.Api.Validators
     {
         public UpdateReservationRequestValidator()
         {
-            RuleFor(x => x.SlotId).NotEmpty().WithMessage("Slot ID is required.");
+            RuleFor(x => x.StationId).NotEmpty().WithMessage("Station ID is required.");
+            RuleFor(x => x.BookingDate).NotEmpty().WithMessage("Booking Date is required.");
+            RuleFor(x => x.TimeSlot).NotEmpty().WithMessage("Time Slot is required.");
         }
     }
 }
