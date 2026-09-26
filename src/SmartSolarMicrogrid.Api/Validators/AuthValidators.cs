@@ -25,7 +25,12 @@ namespace SmartSolarMicrogrid.Api.Validators
             RuleFor(x => x.FullName).NotEmpty().WithMessage("Full Name is required.");
             RuleFor(x => x.Phone).NotEmpty().Matches(@"^\d{10}$").WithMessage("Mobile number must be exactly 10 numbers.");
             RuleFor(x => x.Address).NotEmpty().WithMessage("Address is required.");
-            RuleFor(x => x.Password).NotEmpty().MinimumLength(6).WithMessage("Password must be at least 6 characters.");
+            RuleFor(x => x.Password)
+                .NotEmpty()
+                .MinimumLength(6).WithMessage("Password must be at least 6 characters.")
+                .Matches(@"[A-Z]").WithMessage("Password must contain at least one uppercase letter.")
+                .Matches(@"[0-9]").WithMessage("Password must contain at least one number.")
+                .Matches(@"[^a-zA-Z0-9]").WithMessage("Password must contain at least one special character.");
         }
     }
 }

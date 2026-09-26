@@ -39,6 +39,17 @@ const ProsumerList = () => {
     }
   };
 
+  const getErrorMessage = (err, defaultMessage) => {
+    if (err.response?.data?.errors) {
+      const errors = err.response.data.errors;
+      const firstKey = Object.keys(errors)[0];
+      if (firstKey && errors[firstKey].length > 0) {
+        return errors[firstKey][0];
+      }
+    }
+    return err.response?.data?.message || err.response?.data?.title || defaultMessage;
+  };
+
   const handleToggleStatus = async (prosumer) => {
     try {
       if (prosumer.isActive) {
@@ -52,7 +63,7 @@ const ProsumerList = () => {
       }
       fetchProsumers();
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Failed to update status');
+      toast.error(getErrorMessage(err, 'Failed to update status'));
     }
   };
 
@@ -66,7 +77,7 @@ const ProsumerList = () => {
       setNewProsumer({ nic: '', fullName: '', phone: '', address: '', password: '' });
       fetchProsumers();
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Failed to create prosumer');
+      toast.error(getErrorMessage(err, 'Failed to create prosumer'));
     } finally {
       setSaving(false);
     }
@@ -85,7 +96,7 @@ const ProsumerList = () => {
       setIsEditOpen(false);
       fetchProsumers();
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Failed to update prosumer');
+      toast.error(getErrorMessage(err, 'Failed to update prosumer'));
     } finally {
       setSaving(false);
     }
@@ -163,11 +174,11 @@ const ProsumerList = () => {
       {/* Create Prosumer Modal */}
       <Modal isOpen={isCreateOpen} onClose={() => setIsCreateOpen(false)} title="Add New Prosumer">
         <form onSubmit={handleCreate} className="space-y-4">
-          <Input label="NIC" value={newProsumer.nic} onChange={e => setNewProsumer({...newProsumer, nic: e.target.value})} required />
+          <Input label="NIC" value={newProsumer.nic} onChange={e => setNewProsumer({...newProsumer, nic: e.target.value})} required pattern="(\d{12}|\d{9}[vV])" title="NIC must be either 12 numbers or 9 numbers followed by 'v' or 'V'." />
           <Input label="Full Name" value={newProsumer.fullName} onChange={e => setNewProsumer({...newProsumer, fullName: e.target.value})} required />
-          <Input label="Phone" value={newProsumer.phone} onChange={e => setNewProsumer({...newProsumer, phone: e.target.value})} required />
+          <Input label="Phone" value={newProsumer.phone} onChange={e => setNewProsumer({...newProsumer, phone: e.target.value})} required pattern="\d{10}" title="Mobile number must be exactly 10 numbers." />
           <Input label="Address" value={newProsumer.address} onChange={e => setNewProsumer({...newProsumer, address: e.target.value})} required />
-          <Input label="Password" type="password" value={newProsumer.password} onChange={e => setNewProsumer({...newProsumer, password: e.target.value})} required />
+          <Input label="Password" type="password" value={newProsumer.password} onChange={e => setNewProsumer({...newProsumer, password: e.target.value})} required pattern="(?=.*[A-Z])(?=.*[0-9])(?=.*[^a-zA-Z0-9]).{6,}" title="Password must be at least 6 characters and contain an uppercase letter, a number, and a special character." />
           <div className="pt-4 flex justify-end space-x-3">
             <Button type="button" variant="outline" onClick={() => setIsCreateOpen(false)}>Cancel</Button>
             <Button type="submit" disabled={saving}>{saving ? 'Saving...' : 'Create Prosumer'}</Button>
@@ -180,7 +191,7 @@ const ProsumerList = () => {
         <Modal isOpen={isEditOpen} onClose={() => setIsEditOpen(false)} title={`Edit Prosumer: ${editProsumer.nic}`}>
           <form onSubmit={handleUpdate} className="space-y-4">
             <Input label="Full Name" value={editProsumer.fullName} onChange={e => setEditProsumer({...editProsumer, fullName: e.target.value})} required />
-            <Input label="Phone" value={editProsumer.phone} onChange={e => setEditProsumer({...editProsumer, phone: e.target.value})} required />
+            <Input label="Phone" value={editProsumer.phone} onChange={e => setEditProsumer({...editProsumer, phone: e.target.value})} required pattern="\d{10}" title="Mobile number must be exactly 10 numbers." />
             <Input label="Address" value={editProsumer.address} onChange={e => setEditProsumer({...editProsumer, address: e.target.value})} required />
             <div className="pt-4 flex justify-end space-x-3">
               <Button type="button" variant="outline" onClick={() => setIsEditOpen(false)}>Cancel</Button>

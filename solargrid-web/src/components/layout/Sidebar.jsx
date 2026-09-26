@@ -14,7 +14,7 @@ const Sidebar = () => {
 
   if (isBackoffice) {
     navItems.push({ name: 'Prosumers', path: '/prosumers', icon: Users });
-    navItems.push({ name: 'Web Users', path: '/users', icon: UserCircle });
+    navItems.push({ name: 'Staff Management', path: '/users', icon: UserCircle });
   }
 
   return (
