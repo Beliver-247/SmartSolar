@@ -1,6 +1,6 @@
 /*
  * Purpose: Represents JWT configuration settings from appsettings.
- * Author: Antigravity
+ * Author: Mendis J.D.L. (IT22110084)
  * Date: 2026-09-22
  */
 namespace SmartSolarMicrogrid.Api.Configuration
