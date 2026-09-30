@@ -1,6 +1,6 @@
 /*
  * Purpose: User repository implementation.
- * Author: Antigravity
+ * Author: Mendis J.D.L. (IT22110084)
  * Date: 2026-09-22
  */
 using Microsoft.Extensions.Options;
