@@ -1,6 +1,6 @@
 /*
  * Purpose: Prosumer repository interface.
- * Author: Antigravity
+ * Author: Rathnayaka D.M.B.H. (IT22149930)
  * Date: 2026-09-22
  */
 using SmartSolarMicrogrid.Api.Models;

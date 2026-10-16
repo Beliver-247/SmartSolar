@@ -1,0 +1,34 @@
+SmartSolar Microgrid Trading System - Team Contributions
+======================================================
+
+Links:
+- YouTube Demonstration Video: [INSERT YOUTUBE LINK HERE]
+- GitHub Repository: [INSERT GITHUB REPO LINK HERE]
+
+------------------------------------------------------
+
+Team Members & Contributions
+
+1. Mendis J.D.L. (IT22110084)
+Feature Focus: Authentication & Web User Management
+- Backend (.NET): Developed the JWT authentication service, User repository, and Controllers for Backoffice/GridOperator web users. Configured security middleware and app settings.
+- Frontend (React): Implemented the global AuthContext, login page, staff management directory, and protected routing wrappers.
+- Mobile (Android): Built the login/registration flows, client-side validation rules (NIC, phone, password), and the Retrofit AuthInterceptor for secure token management.
+
+2. Rathnayaka D.M.B.H. (IT22149930)
+Feature Focus: Prosumer Management & Shared Infrastructure
+- Backend (.NET): Handled prosumer profile management (CRUD & activation). Configured shared infrastructure such as MongoDB connection strings, CORS, Program.cs startup, and the global exception handling middleware.
+- Frontend (React): Configured the base Axios instances, global Tailwind/Vite build configurations, and built the Prosumer directory UI.
+- Mobile (Android): Handled local offline caching with SQLite (solargrid.db), SessionManager preferences, and the Prosumer dashboard metrics.
+
+3. Kodithuwakku I.P. (IT22189776)
+Feature Focus: Station & Booking Slot Management
+- Backend (.NET): Built the infrastructure for solar stations, GPS mapping, battery slot capacity, and operating schedules. Handled all Station and Slot Repositories and Controllers.
+- Frontend (React): Created the reusable UI components (Buttons, Modals, Inputs, Loading Spinners) and built the Solar Station management UI.
+- Mobile (Android): Developed the Interactive Google Map view with dynamic GPS markers, station catalog browsing, and slot selection adapters.
+
+4. Thassara M.P.M. (IT22239198)
+Feature Focus: Reservation Management & Energy Transfer / QR
+- Backend (.NET): Implemented the reservation state machine (Pending, Approved, Completed, Cancelled). Handled QR code generation logic and Transfer/Verification controllers.
+- Frontend (React): Built the global application Layout and Sidebar routing. Developed the Reservation Approvals dashboard for backoffice staff.
+- Mobile (Android): Built the reservation lifecycle views (My Reservations), QR Pass generation, CameraX barcode scanner, and Grid Operator energy transfer verification screens.

@@ -1,6 +1,6 @@
 /*
  * Purpose: Reservation DTOs.
- * Author: Antigravity
+ * Author: Thassara M.P.M. (IT22239198)
  * Date: 2026-09-22
  */
 using System;

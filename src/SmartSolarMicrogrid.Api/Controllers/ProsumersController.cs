@@ -1,6 +1,6 @@
 /*
  * Purpose: Prosumer management endpoints.
- * Author: Antigravity
+ * Author: Rathnayaka D.M.B.H. (IT22149930)
  * Date: 2026-09-22
  */
 using Microsoft.AspNetCore.Authorization;

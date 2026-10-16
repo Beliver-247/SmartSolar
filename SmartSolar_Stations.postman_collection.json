@@ -1,0 +1,374 @@
+{
+	"info": {
+		"_postman_id": "aa12345b-c678-9012-d345-e67890f12345",
+		"name": "SmartSolar - Stations Setup",
+		"description": "Collection to log in as admin and create 10 Sri Lanka stations.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1. Admin Login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"if (jsonData.token) {",
+							"    pm.environment.set(\"jwt_token\", jsonData.token);",
+							"    console.log(\"JWT Token saved to environment.\");",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"usernameOrNic\": \"admin\",\n  \"password\": \"Admin@123\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:5088/api/auth/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5088",
+					"path": [
+						"api",
+						"auth",
+						"login"
+					]
+				}
+			}
+		},
+		{
+			"name": "2. Create Station - Colombo",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwt_token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"stationName\": \"Colombo Node\",\n  \"gpsLocation\": {\n    \"lat\": 6.9271,\n    \"lng\": 79.8612\n  },\n  \"capacityKwh\": 100,\n  \"batterySlots\": 10,\n  \"schedule\": [\n    \"08:00 AM - 12:00 PM\",\n    \"01:00 PM - 05:00 PM\"\n  ]\n}"
+				},
+				"url": {
+					"raw": "http://localhost:5088/api/stations",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5088",
+					"path": [
+						"api",
+						"stations"
+					]
+				}
+			}
+		},
+		{
+			"name": "3. Create Station - Kandy",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwt_token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"stationName\": \"Kandy Node\",\n  \"gpsLocation\": {\n    \"lat\": 7.2906,\n    \"lng\": 80.6337\n  },\n  \"capacityKwh\": 75,\n  \"batterySlots\": 8,\n  \"schedule\": [\n    \"09:00 AM - 04:00 PM\"\n  ]\n}"
+				},
+				"url": {
+					"raw": "http://localhost:5088/api/stations",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5088",
+					"path": [
+						"api",
+						"stations"
+					]
+				}
+			}
+		},
+		{
+			"name": "4. Create Station - Galle",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwt_token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"stationName\": \"Galle Coastal Node\",\n  \"gpsLocation\": {\n    \"lat\": 6.0367,\n    \"lng\": 80.2170\n  },\n  \"capacityKwh\": 50,\n  \"batterySlots\": 5,\n  \"schedule\": [\n    \"07:00 AM - 11:00 AM\",\n    \"02:00 PM - 06:00 PM\"\n  ]\n}"
+				},
+				"url": {
+					"raw": "http://localhost:5088/api/stations",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5088",
+					"path": [
+						"api",
+						"stations"
+					]
+				}
+			}
+		},
+		{
+			"name": "5. Create Station - Negombo",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwt_token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"stationName\": \"Negombo Node\",\n  \"gpsLocation\": {\n    \"lat\": 7.2008,\n    \"lng\": 79.8737\n  },\n  \"capacityKwh\": 60,\n  \"batterySlots\": 6,\n  \"schedule\": [\n    \"08:00 AM - 05:00 PM\"\n  ]\n}"
+				},
+				"url": {
+					"raw": "http://localhost:5088/api/stations",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5088",
+					"path": [
+						"api",
+						"stations"
+					]
+				}
+			}
+		},
+		{
+			"name": "6. Create Station - Rathnapura",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwt_token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"stationName\": \"Rathnapura Node\",\n  \"gpsLocation\": {\n    \"lat\": 6.7056,\n    \"lng\": 80.3847\n  },\n  \"capacityKwh\": 45,\n  \"batterySlots\": 4,\n  \"schedule\": [\n    \"10:00 AM - 04:00 PM\"\n  ]\n}"
+				},
+				"url": {
+					"raw": "http://localhost:5088/api/stations",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5088",
+					"path": [
+						"api",
+						"stations"
+					]
+				}
+			}
+		},
+		{
+			"name": "7. Create Station - Anuradhapura",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwt_token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"stationName\": \"Anuradhapura Node\",\n  \"gpsLocation\": {\n    \"lat\": 8.3114,\n    \"lng\": 80.4037\n  },\n  \"capacityKwh\": 120,\n  \"batterySlots\": 12,\n  \"schedule\": [\n    \"06:00 AM - 12:00 PM\",\n    \"01:00 PM - 07:00 PM\"\n  ]\n}"
+				},
+				"url": {
+					"raw": "http://localhost:5088/api/stations",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5088",
+					"path": [
+						"api",
+						"stations"
+					]
+				}
+			}
+		},
+		{
+			"name": "8. Create Station - Trincomalee",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwt_token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"stationName\": \"Trincomalee Node\",\n  \"gpsLocation\": {\n    \"lat\": 8.5874,\n    \"lng\": 81.2152\n  },\n  \"capacityKwh\": 80,\n  \"batterySlots\": 8,\n  \"schedule\": [\n    \"08:00 AM - 06:00 PM\"\n  ]\n}"
+				},
+				"url": {
+					"raw": "http://localhost:5088/api/stations",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5088",
+					"path": [
+						"api",
+						"stations"
+					]
+				}
+			}
+		},
+		{
+			"name": "9. Create Station - Matara",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwt_token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"stationName\": \"Matara Node\",\n  \"gpsLocation\": {\n    \"lat\": 5.9549,\n    \"lng\": 80.5366\n  },\n  \"capacityKwh\": 55,\n  \"batterySlots\": 5,\n  \"schedule\": [\n    \"07:00 AM - 05:00 PM\"\n  ]\n}"
+				},
+				"url": {
+					"raw": "http://localhost:5088/api/stations",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5088",
+					"path": [
+						"api",
+						"stations"
+					]
+				}
+			}
+		},
+		{
+			"name": "10. Create Station - Kurunegala",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwt_token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"stationName\": \"Kurunegala Node\",\n  \"gpsLocation\": {\n    \"lat\": 7.4818,\n    \"lng\": 80.3609\n  },\n  \"capacityKwh\": 90,\n  \"batterySlots\": 9,\n  \"schedule\": [\n    \"09:00 AM - 06:00 PM\"\n  ]\n}"
+				},
+				"url": {
+					"raw": "http://localhost:5088/api/stations",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5088",
+					"path": [
+						"api",
+						"stations"
+					]
+				}
+			}
+		},
+		{
+			"name": "11. Create Station - Badulla",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwt_token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"stationName\": \"Badulla Node\",\n  \"gpsLocation\": {\n    \"lat\": 6.9819,\n    \"lng\": 81.0556\n  },\n  \"capacityKwh\": 40,\n  \"batterySlots\": 4,\n  \"schedule\": [\n    \"08:00 AM - 04:00 PM\"\n  ]\n}"
+				},
+				"url": {
+					"raw": "http://localhost:5088/api/stations",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5088",
+					"path": [
+						"api",
+						"stations"
+					]
+				}
+			}
+		}
+	]
+}

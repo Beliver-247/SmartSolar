@@ -112,6 +112,16 @@ const ReservationList = () => {
   const { user } = useAuth();
   const canBookOnBehalf = user?.role === 'Backoffice' || user?.role === 'GridOperator';
 
+  const pendingCount = reservations.filter(r => r.status === 'Pending').length;
+
+  // Use string comparison (YYYY-MM-DD) to avoid timezone/UTC parsing offsets from new Date(string)
+  const todayDate = new Date();
+  const todayStr = todayDate.getFullYear() + '-' + String(todayDate.getMonth() + 1).padStart(2, '0') + '-' + String(todayDate.getDate()).padStart(2, '0');
+  
+  const approvedFutureCount = reservations.filter(r => {
+    return r.status === 'Approved' && r.bookingDate >= todayStr;
+  }).length;
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -123,6 +133,19 @@ const ReservationList = () => {
           </Button>
         )}
       </div>
+
+      {canBookOnBehalf && (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-2">
+          <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 flex flex-col items-center justify-center">
+            <p className="text-sm font-medium text-gray-500 uppercase tracking-wide">Total Pending</p>
+            <p className="text-4xl font-bold text-yellow-600 mt-2">{pendingCount}</p>
+          </div>
+          <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 flex flex-col items-center justify-center">
+            <p className="text-sm font-medium text-gray-500 uppercase tracking-wide">Approved Future Bookings</p>
+            <p className="text-4xl font-bold text-blue-600 mt-2">{approvedFutureCount}</p>
+          </div>
+        </div>
+      )}
 
       <div className="bg-white p-4 rounded-lg shadow border border-gray-200 flex space-x-4 items-end">
         <Input 

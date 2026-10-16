@@ -1,6 +1,6 @@
 /*
  * Purpose: Solar station information node.
- * Author: Antigravity
+ * Author: Kodithuwakku I.P. (IT22189776)
  * Date: 2026-09-22
  */
 using MongoDB.Bson;

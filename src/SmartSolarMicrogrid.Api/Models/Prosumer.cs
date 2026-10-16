@@ -1,6 +1,6 @@
 /*
  * Purpose: Solar Prosumer model, using NIC as primary key.
- * Author: Antigravity
+ * Author: Rathnayaka D.M.B.H. (IT22149930)
  * Date: 2026-09-22
  */
 using MongoDB.Bson.Serialization.Attributes;

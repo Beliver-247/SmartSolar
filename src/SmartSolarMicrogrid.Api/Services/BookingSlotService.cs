@@ -1,6 +1,6 @@
 /*
  * Purpose: Booking slot management.
- * Author: Antigravity
+ * Author: Kodithuwakku I.P. (IT22189776)
  * Date: 2026-09-22
  */
 using SmartSolarMicrogrid.Api.DTOs;
