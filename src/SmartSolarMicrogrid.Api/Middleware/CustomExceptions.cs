@@ -1,6 +1,6 @@
 /*
  * Purpose: Custom Exceptions for global handling.
- * Author: Antigravity
+ * Author: Rathnayaka D.M.B.H. (IT22149930)
  * Date: 2026-09-22
  */
 using System;
